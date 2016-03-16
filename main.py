@@ -2,7 +2,7 @@
 """
 PCA Calculator
 version: 1.0
-PyQt4 Tutorial
+Sailab Application
 Created on Mon March 14 14:43:19 2016
 """
 import PyQt4.QtGui as QtGui
@@ -14,11 +14,13 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 import calc
 
+# global変数
 f_name = []
 material = []
 calc = calc.Calc()
 
 
+# タブ表示の親クラス
 class TabMain(QtGui.QWidget):
     def __init__(self, parent=None):
         super(TabMain, self).__init__()
@@ -68,6 +70,7 @@ class TabMain(QtGui.QWidget):
         self.pathdraw()
 
 
+# ファイル追加用タブ
 class Tab1Widget(TabMain):
     def __init__(self, parent=None):
         super(Tab1Widget, self).__init__()
@@ -122,6 +125,7 @@ class Tab1Widget(TabMain):
         self.ledit.setText("")
 
 
+# リスト表示用タブ
 class Tab2Widget(TabMain):
     def __init__(self, parent=None):
         super(Tab2Widget, self).__init__()
@@ -168,6 +172,7 @@ class Tab2Widget(TabMain):
         self.setLayout(grid)
 
 
+# グラフ表示タブ１
 class Tab3Widget(TabMain):
     def __init__(self, parent=None):
         self.creategraph(3, 0.4)
@@ -227,6 +232,7 @@ class Tab3Widget(TabMain):
             self.figure.savefig("results/result(compare)"+str(self.count+1)+".png")
 
 
+# グラフ表示用タブ2
 class Tab4Widget(TabMain):
     def __init__(self, parent=None):
         self.creategraph(1, 0.8)
@@ -287,6 +293,8 @@ class Tab4Widget(TabMain):
             self.figure.savefig("results/result(rate)"+str(self.count+1)+".png")
 
 
+
+# メインウインドウクラス
 class MainWindow(QtGui.QWidget):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__()

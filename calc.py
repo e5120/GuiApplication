@@ -9,6 +9,7 @@ class Calc():
         self.arr = []
         self.material = []
 
+    # ファイル追加
     def addFile(self, filename):
         self.fname.append(filename)
         self.arr.append(pd.read_csv(self.fname[-1], header=None, delimiter="\t"))
@@ -16,10 +17,9 @@ class Calc():
         self.arr[-1].columns = ["path", "eval1", "eval2", "judge"]
 
         self.material.append((self.processing(self.arr[-1])))
-        # compare_graph(dimg_sum, djudge_sum, dmatch_sum)
-        # rate_graph(dimg_sum, djudge_sum, dmatch_sum)
         return self.material
 
+    # ファイルの内容を整理
     def processing(self, arr):
         img_sum = np.size(arr["judge"])
         # 危険、安全と判断した写真の数
