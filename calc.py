@@ -32,6 +32,13 @@ class Calc():
         dimg_sum = np.size(np.where(arr["path"].str.extract("(danger)") == "danger"))
         simg_sum = np.size(np.where(arr["path"].str.extract("(safe)") == "safe"))
 
+        deval_num = arr.ix[arr["path"].str.extract("(danger)") == "danger"]
+        seval_num = arr.ix[arr["path"].str.extract("(safe)") == "safe"]
+
+        deval = np.array(deval_num["eval1"])
+        seval = np.array(seval_num["eval1"])
+        # print(deval)
+
         # AIの判定と人間の判定が一致した数
         dmatch_sum = np.size(np.where((arr["path"].str.extract("(danger)") == "danger") & (arr["judge"] == 1)))
         smatch_sum = np.size(np.where((arr["path"].str.extract("(safe)") == "safe") & (arr["judge"] == 2)))
@@ -39,4 +46,4 @@ class Calc():
         dmatch_rate = dmatch_sum / dimg_sum * 100
         smatch_rate = smatch_sum / simg_sum * 100
 
-        return [["danger", dimg_sum, djudge_sum, dmatch_sum, dmatch_rate], ["safe", simg_sum, sjudge_sum, smatch_sum,  smatch_rate], img_sum]
+        return [["danger", dimg_sum, djudge_sum, dmatch_sum, dmatch_rate], ["safe", simg_sum, sjudge_sum, smatch_sum,  smatch_rate], [img_sum, deval, seval]]

@@ -53,7 +53,7 @@ class TabMain(QtGui.QWidget):
     def autolabel(self, smps):
         for smp in smps:
             height = smp.get_height()
-            self.axes.text(smp.get_x() + smp.get_width()/2., 1.05*height, '%d' % int(height),ha='center', va='bottom')
+            self.axes.text(smp.get_x() + smp.get_width()/2., 0.92*height, '%d' % int(height), ha='center', va='bottom')
 
     def increment(self):
         global f_name
@@ -68,6 +68,9 @@ class TabMain(QtGui.QWidget):
         if self.count < 0:
             self.count = len(f_name) - 1
         self.pathdraw()
+
+    def pathdraw(self):
+        pass
 
 
 # ファイル追加用タブ
@@ -89,10 +92,10 @@ class Tab1Widget(TabMain):
         self.tableItem = QtGui.QTableWidgetItem()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setHorizontalHeaderLabels(["path"])
 
     def updatetable(self):
         global f_name
-        self.table.setHorizontalHeaderLabels(["path"])
         self.table.setRowCount(len(f_name))
         for i in range(len(f_name)):
             self.table.setItem(i, 0, QtGui.QTableWidgetItem(f_name[i]))
@@ -109,8 +112,10 @@ class Tab1Widget(TabMain):
         self.setLayout(grid)
 
     def open_filedialog(self):
-        # filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', os.path.expanduser('~') + '/Desktop/')
-        filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', './resources')
+        if os.path.exists('./resources') is True:
+            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', './resources')
+        else:
+            filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', os.path.expanduser('~') + '/Desktop/')
         self.ledit.setText(filename)
 
     def add_file(self):
@@ -252,7 +257,7 @@ class Tab4Widget(TabMain):
         global f_name
         if len(f_name) != 0:
             self.ledit.setText(f_name[self.count])
-            self.comparegraph()
+            self.rategraph()
 
     def addwidget(self):
         grid = QtGui.QGridLayout()
@@ -265,7 +270,7 @@ class Tab4Widget(TabMain):
         # grid.addWidget(self.toolbar, 4, 2)
         self.setLayout(grid)
 
-    def comparegraph(self):
+    def rategraph(self):
         global material
         if len(material):
             self.axes.clear()
@@ -293,6 +298,68 @@ class Tab4Widget(TabMain):
             self.figure.savefig("results/result(rate)"+str(self.count+1)+".png")
 
 
+# 散布図表示用タブ
+class Tab5Widget(TabMain):
+    def __init__(self, parent=None):
+        self.creategraph(2)
+        super(Tab5Widget, self).__init__()
+
+    def createbutton(self):
+        self.updataBtn = QtGui.QPushButton('plot')
+        self.updataBtn.clicked.connect(self.pathdraw)
+        self.nextBtn = QtGui.QPushButton('Next')
+        self.nextBtn.clicked.connect(self.increment)
+        self.backBtn = QtGui.QPushButton("Back")
+        self.backBtn.clicked.connect(self.decrement)
+        self.saveBtn = QtGui.QPushButton("Save")
+        self.saveBtn.clicked.connect(self.savegraph)
+
+    def pathdraw(self):
+        global f_name
+        if len(f_name) != 0:
+            self.ledit.setText(f_name[self.count])
+            self.scattergraph()
+
+    def addwidget(self):
+        grid = QtGui.QGridLayout()
+        grid.addWidget(self.updataBtn, 1, 2)
+        grid.addWidget(self.nextBtn, 1, 3)
+        grid.addWidget(self.backBtn, 1, 1)
+        grid.addWidget(self.ledit, 2, 2)
+        grid.addWidget(self.saveBtn, 3, 3)
+        grid.addWidget(self.canvas, 3, 2)
+        # grid.addWidget(self.toolbar, 4, 2)
+        self.setLayout(grid)
+
+    def scattergraph(self):
+        global material
+        if len(material):
+            self.axes.clear()
+            self.naminggraph()
+            self.axes.grid()
+
+            danger_i = range(len(material[self.count][2][1]))
+            safe_i = range(len(material[self.count][2][2]))
+            smp1 = self.axes.plot(danger_i, material[self.count][2][1], 'o', color="r")
+            smp2 = self.axes.plot(safe_i, material[self.count][2][2], 'o', color="b")
+            # self.axes.legend(loc="best")
+
+            # self.autolabel(smp1)
+            # self.autolabel(smp2)
+            self.canvas.draw()
+
+    def naminggraph(self):
+        self.axes.set_ylabel("Value")
+        self.axes.set_ylim([0, 1])
+        self.axes.set_title("Compare safe with danger(scatter)")
+        # self.axes.set_xticks(self.x+self.w/2)
+        # self.axes.set_xticklabels(("match_rate"))
+
+    def savegraph(self):
+        global f_name
+        if len(f_name):
+            self.figure.savefig("results/result(scatter)"+str(self.count+1)+".png")
+
 
 # メインウインドウクラス
 class MainWindow(QtGui.QWidget):
@@ -306,6 +373,7 @@ class MainWindow(QtGui.QWidget):
         qtab.addTab(Tab2Widget(parent=self), 'Table')
         qtab.addTab(Tab3Widget(parent=self), 'Graph1')
         qtab.addTab(Tab4Widget(parent=self), 'Graph2')
+        qtab.addTab(Tab5Widget(parent=self), 'Graph3')
 
         hbox = QtGui.QHBoxLayout()
         hbox.addWidget(qtab)
