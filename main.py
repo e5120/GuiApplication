@@ -234,7 +234,8 @@ class Tab3Widget(TabMain):
     def savegraph(self):
         global f_name
         if len(f_name):
-            self.figure.savefig("results/result(compare)"+str(self.count+1)+".png")
+            head, tail = os.path.split(f_name[self.count])
+            self.figure.savefig("results/(compare)"+tail+".png")
 
 
 # グラフ表示用タブ2
@@ -295,7 +296,8 @@ class Tab4Widget(TabMain):
     def savegraph(self):
         global f_name
         if len(f_name):
-            self.figure.savefig("results/result(rate)"+str(self.count+1)+".png")
+            head, tail = os.path.split(f_name[self.count])
+            self.figure.savefig("results/(rate)"+tail+".png")
 
 
 # 散布図表示用タブ
@@ -358,7 +360,8 @@ class Tab5Widget(TabMain):
     def savegraph(self):
         global f_name
         if len(f_name):
-            self.figure.savefig("results/result(scatter)"+str(self.count+1)+".png")
+            head, tail = os.path.split(f_name[self.count])
+            self.figure.savefig("results/(scatter)"+tail+".png")
 
 
 # メインウインドウクラス
